@@ -25,9 +25,8 @@ def facebook_incoming():
 
 @app.route('/facebook_incoming', methods=['POST'])
 def webhook():
-    # CITATION :  version based on https://github.com/hartleybrody/fb-messenger-bot/blob/master/app.py
 
-    # NOTE: code needed to be adapted to remove PASS and put return, 200 ok 
+    # NOTE: code needed to be adapted to remove PASS and put return, 200 ok and ordering of the code, handling stickers, etc. hence removing the citation 
     data = request.get_json()
     for entry in data["entry"]:
         for messaging_event in entry["messaging"]:
