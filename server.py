@@ -1,4 +1,4 @@
-from flask import Flask 
+from flask import Flask, request
 from pymongo import MongoClient
 import os
 
@@ -17,6 +17,10 @@ def hello():
 def add_user():
     users.insert_one({'user_id' : "hello"})
     return "done"
+
+@app.route('/facebook_incoming')
+def facebook_incoming():
+    return request.args['hub.challenge']
 
 if __name__ == "__main__":
     app.run(debug=True)
