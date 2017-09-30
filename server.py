@@ -77,8 +77,8 @@ def webhook():
                     if item['state'] == 1:
                         #TODO: need to process the quick reply chosen 
                         # send_message(sender_id, "Ok well let's just chat for a bit now!")
-                        res = c.predictOnQuery(message_text)
-                        send_message(sender_id, res)
+                        # res = c.predictOnQuery(message_text)
+                        send_message(sender_id, "waiting")
 
                     
 
