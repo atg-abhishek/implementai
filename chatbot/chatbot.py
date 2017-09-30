@@ -291,8 +291,7 @@ class Chatbot:
 
             #self.predictOnQuery(self.sess)
 
-    def predictOnQuery(self, sess, question):
-
+    def predictOnQuery(self, question):
         answer = self.singlePredict(question)
         if not answer:
             print('did not get answer')
