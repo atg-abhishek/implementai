@@ -2,6 +2,7 @@ from flask import Flask, request
 from pymongo import MongoClient
 import os, json, requests
 from pprint import pprint 
+from random import randint
 
 client = MongoClient(os.environ['MONGODB_URI'])
 db = client[os.environ['MONGO_DB_NAME']]
@@ -59,7 +60,14 @@ def webhook():
                 with open('samples.txt','w') as outfile:
                     outfile.writelines(message_text)
 
-                send_message(sender_id, "roger that!")
+                mess_list = [
+                    "How you doing?",
+                    "My man what's good!",
+                    "Let's make some stuff happen",
+                    "So this hackathon is a lot of fun isn't it?",
+                    "tell me a joke and I will judge how funny it is"
+                ]
+                send_message(sender_id, mess_list[randint(0,4)])
 
                 
 
