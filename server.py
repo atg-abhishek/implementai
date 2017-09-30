@@ -1,6 +1,7 @@
 from flask import Flask, request
 from pymongo import MongoClient
 import os, json, requests
+from pprint import pprint 
 
 client = MongoClient(os.environ['MONGODB_URI'])
 db = client[os.environ['MONGO_DB_NAME']]
@@ -29,7 +30,7 @@ def webhook():
     if data['object'] == 'page':
         for entry in data["entry"]:
             for messaging_event in entry["messaging"]:
-
+                pprint(messaging_event)
                 if messaging_event.get("message"):  # someone sent us a message
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
@@ -66,6 +67,7 @@ def send_message(recipient_id, message_text):
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
