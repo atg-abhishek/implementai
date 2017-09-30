@@ -82,15 +82,16 @@ def webhook():
                     
 
 
-                    #TODO: get rid of the following once the actual model is plugged in 
-                    mess_list = [
-                        "How you doing?",
-                        "My man what's good!",
-                        "Let's make some stuff happen",
-                        "So this hackathon is a lot of fun isn't it?",
-                        "tell me a joke and I will judge how funny it is"
-                    ]
-                    send_message(sender_id, mess_list[randint(0,4)])
+                    #TODO: get rid of the following once the actual model is plugged in
+                    # Commenting out the default messages because options are not presented 
+                    # mess_list = [
+                    #     "How you doing?",
+                    #     "My man what's good!",
+                    #     "Let's make some stuff happen",
+                    #     "So this hackathon is a lot of fun isn't it?",
+                    #     "tell me a joke and I will judge how funny it is"
+                    # ]
+                    # send_message(sender_id, mess_list[randint(0,4)])
 
                 except:
                     send_message(sender_id ,"Encountered an error, check the logs")
