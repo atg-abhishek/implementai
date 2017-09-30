@@ -27,35 +27,34 @@ def facebook_incoming():
 def webhook():
     # CITATION :  version based on https://github.com/hartleybrody/fb-messenger-bot/blob/master/app.py
     data = request.get_json()
-    if data['object'] == 'page':
-        for entry in data["entry"]:
-            for messaging_event in entry["messaging"]:
+    for entry in data["entry"]:
+        for messaging_event in entry["messaging"]:
 
 
-                if messaging_event.get("delivery"):  # delivery confirmation
+            if messaging_event.get("delivery"):  # delivery confirmation
+                pass
+
+            if messaging_event.get("optin"):  # optin confirmation
+                pass
+
+            if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
+                pass
+
+            pprint(messaging_event)
+            if messaging_event.get("message"):  # someone sent us a message
+                
+                sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
+                recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
+
+
+
+                if "sticker_id" in messaging_event['message'].keys():
+                    send_message(sender_id, "Please don't send me stickers, emoji or non-text stuff, I'm boring that way :(")
                     pass
 
-                if messaging_event.get("optin"):  # optin confirmation
-                    pass
+                message_text = messaging_event["message"]["text"]  # the message's text
 
-                if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
-                    pass
-
-                pprint(messaging_event)
-                if messaging_event.get("message"):  # someone sent us a message
-                    
-                    sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
-                    recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
-
-
-
-                    if "sticker_id" in messaging_event['message'].keys():
-                        send_message(sender_id, "Please don't send me stickers, emoji or non-text stuff, I'm boring that way :(")
-                        pass
-
-                    message_text = messaging_event["message"]["text"]  # the message's text
-
-                    send_message(sender_id, "roger that!")
+                send_message(sender_id, "roger that!")
 
                 
 
