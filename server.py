@@ -3,7 +3,6 @@ from pymongo import MongoClient
 import os, json, requests
 from pprint import pprint 
 from random import randint
-from chatbot import chatbot
 
 client = MongoClient(os.environ['MONGODB_URI'])
 db = client[os.environ['MONGO_DB_NAME']]
@@ -66,7 +65,7 @@ def webhook():
 
                     item = users.find_one({'user_id' : sender_id})
                     if item['state'] == 0: 
-                        send_message(sender_id, "Welcome to the ToastMaster! I can do many things! ")
+                        # send_message(sender_id, "Welcome to the ToastMaster! I can do many things! ")
                         send_quick_reply(sender_id, "Let's start with one of the following options ", [
                                 {"content_type" : "text", "title" : "Jokes", "payload" : "0"},
                                 {"content_type" : "text", "title" : "Talk to me!", "payload" : "1"}
