@@ -77,7 +77,10 @@ def webhook():
                         #TODO: need to process the quick reply chosen 
                         # send_message(sender_id, "Ok well let's just chat for a bit now!")
                         # res = c.predictOnQuery(message_text)
-                        send_message(sender_id, "waiting")
+                        headers = {"Content-Type" : "application/json"}
+                        payload = json.dumps({"message" : message_text})
+                        r = requests.post(os.environ['UBUNTU_IP']+":5000/get_answer", headers=headers, data=payload)
+                        send_message(sender_id, r.json()['result'])
 
                     
 
