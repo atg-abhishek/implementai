@@ -47,19 +47,38 @@ def webhook():
                 
                 sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
 
-                if users.find_one({'user_id' : sender_id}) is None:
-                    # User was not found in the database, create them 
-                    users.insert_one({'user_id' : sender_id})
-
-
                 if "sticker_id" in messaging_event['message'].keys():
                     send_message(sender_id, "Please don't send me stickers, emoji or non-text stuff, I'm boring that way :(")
                     return "ok", 200
 
                 message_text = messaging_event["message"]["text"]  # the message's text
+
+                if message_text == "Reset":
+                    users.remove({'user_id' : sender_id})
+
+                if users.find_one({'user_id' : sender_id}) is None:
+                    # User was not found in the database, create them 
+                    users.insert_one({'user_id' : sender_id, 'state' : 0})
+
+
+                item = users.find_one({'user_id' : sender_id})
+                if item['state'] == 0: 
+                    send_message(sender_id, "Welcome to the ToastMaster! I can do many things! ")
+                    send_quick_reply(sender_id, "Let's start with one of the following options ", [
+                            {"content_type" : "text", "title" : "Jokes", "payload" : "0"},
+                            {"content_type" : "text", "title" : "Talk to me!", "payload" : "1"}
+                        ]
+                    )
+                    users.update_one({'user_id' : sender_id}, {'$set' : {'state' : 1} })
+
+                if item['state'] == 1:
+                    send_message(sender_id, "Ok well let's just chat for a bit now!")
+
                 with open('samples.txt','w') as outfile:
                     outfile.writelines(message_text)
 
+
+                #TODO: get rid of the following once the actual model is plugged in 
                 mess_list = [
                     "How you doing?",
                     "My man what's good!",
@@ -87,6 +106,25 @@ def send_message(recipient_id, message_text):
         },
         "message": {
             "text": message_text
+        }
+    })
+    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
+
+def send_quick_reply(recipient_id, message_text, content):
+    # Content needs to be a list of dicts
+    params = {
+        "access_token": os.environ["FB_PAGE_TOKEN"]
+    }
+    headers = {
+        "Content-Type": "application/json"
+    }
+    data = json.dumps({
+        "recipient": {
+            "id": recipient_id
+        },
+        "message": {
+            "text": message_text, 
+            "quick_replies" : content
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
