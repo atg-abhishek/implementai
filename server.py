@@ -36,7 +36,9 @@ def webhook():
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
 
-                    if "sticker_id" in messaging_event.keys():
+
+
+                    if "sticker_id" in messaging_event['message'].keys():
                         send_message(sender_id, "Please don't send me stickers, emoji or non-text stuff, I'm boring that way :(")
                         pass
 
