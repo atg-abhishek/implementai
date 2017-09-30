@@ -147,7 +147,7 @@ class Chatbot:
         # General initialisation
 
         self.args = self.parseArgs(args)
-
+        self.args.test = Chatbot.TestMode.ALL
         if not self.args.rootDir:
             self.args.rootDir = os.getcwd()  # Use the current working directory
 
@@ -657,4 +657,3 @@ class Chatbot:
         else:
             print('Warning: Error in the device name: {}, use the default device'.format(self.args.device))
             return None
-
