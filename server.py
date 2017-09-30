@@ -50,7 +50,7 @@ def webhook():
 
                 if "sticker_id" in messaging_event['message'].keys():
                     send_message(sender_id, "Please don't send me stickers, emoji or non-text stuff, I'm boring that way :(")
-                    pass
+                    return "ok", 200
 
                 message_text = messaging_event["message"]["text"]  # the message's text
 
