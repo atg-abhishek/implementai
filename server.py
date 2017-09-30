@@ -80,7 +80,7 @@ def webhook():
                         headers = {"Content-Type" : "application/json"}
                         payload = json.dumps({"message" : message_text})
                         pprint("reached here")
-                        url = os.environ['UBUNTU_IP']+":5000/get_answer"
+                        url = os.environ['UBUNTU_IP']+"/get_answer"
                         pprint(url)
                         r = requests.post(url, headers=headers, data=payload)
                         pprint('now here ')
