@@ -9,8 +9,8 @@ client = MongoClient(os.environ['MONGODB_URI'])
 db = client[os.environ['MONGO_DB_NAME']]
 
 users = db['users']
-c = chatbot.Chatbot()
-c.main()
+# c = chatbot.Chatbot()
+# c.main()
 app = Flask(__name__)
 
 @app.route('/')
