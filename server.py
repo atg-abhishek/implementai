@@ -32,13 +32,13 @@ def webhook():
 
 
             if messaging_event.get("delivery"):  # delivery confirmation
-                pass
+                return "ok", 200
 
             if messaging_event.get("optin"):  # optin confirmation
-                pass
+                return "ok", 200
 
             if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
-                pass
+                return "ok", 200
 
             pprint(messaging_event)
             if messaging_event.get("message"):  # someone sent us a message
