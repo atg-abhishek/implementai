@@ -278,10 +278,6 @@ class Chatbot:
             sess: The current running session
         """
 
-        # Loading the file to predict
-        with open(os.path.join(self.args.rootDir, self.TEST_IN_NAME), 'r') as f:
-            lines = f.readlines()
-
         modelList = self._getModelList()
         if not modelList:
             print('Warning: No model found in \'{}\'. Please train a model before trying to predict'.format(self.modelDir))
@@ -293,22 +289,25 @@ class Chatbot:
             self.saver.restore(sess, modelName)
             print('Testing...')
 
-            saveName = modelName[:-len(self.MODEL_EXT)] + self.TEST_OUT_SUFFIX  # We remove the model extension and add the prediction suffix
-            with open(saveName, 'w') as f:
-                nbIgnored = 0
-                for line in tqdm(lines, desc='Sentences'):
-                    question = line[:-1]  # Remove the endl character
+            self.predictOnQuery(self.sess)
 
-                    answer = self.singlePredict(question)
-                    if not answer:
-                        nbIgnored += 1
-                        continue  # Back to the beginning, try again
+    def predictOnQuery(self, sess):
 
-                    predString = '{x[0]}{0}\n{x[1]}{1}\n\n'.format(question, self.textData.sequence2str(answer, clean=True), x=self.SENTENCES_PREFIX)
-                    if self.args.verbose:
-                        tqdm.write(predString)
-                    f.write(predString)
-                print('Prediction finished, {}/{} sentences ignored (too long)'.format(nbIgnored, len(lines)))
+        answer = '...'
+        while(True):
+            # Loading the file to predict on
+            with open(os.path.join(self.args.rootDir, self.TEST_IN_NAME), 'r') as f:
+                question = f.read().replace('\n', '')
+                answer = self.singlePredict(question)
+                if not answer:
+                    print('did not get answer')
+                    answer = "..."
+                else:
+                    answer = self.textData.sequence2str(answer, clean=True)
+
+            # write answer to file
+            with open(os.path.join(self.args.rootDir, 'output_messages.txt'), 'w') as f:
+                f.write(answer+'\n')
 
     # meat and potatoes
     def mainTestInteractive(self, sess):
@@ -326,6 +325,7 @@ class Chatbot:
               'expectation. Type \'exit\' or just press ENTER to quit the program. Have fun.')
 
         while True:
+            # replace
             question = input(self.SENTENCES_PREFIX[0])
             if question == '' or question == 'exit':
                 break
@@ -336,6 +336,7 @@ class Chatbot:
                 print('Warning: sentence too long, sorry. Maybe try a simpler sentence.')
                 continue  # Back to the beginning, try again
 
+            # replace
             print('{}{}'.format(self.SENTENCES_PREFIX[1], self.textData.sequence2str(answer, clean=True)))
 
             if self.args.verbose:
@@ -656,3 +657,4 @@ class Chatbot:
         else:
             print('Warning: Error in the device name: {}, use the default device'.format(self.args.device))
             return None
+
