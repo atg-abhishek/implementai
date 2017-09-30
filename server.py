@@ -26,7 +26,7 @@ def facebook_incoming():
 
 @app.route('/facebook_incoming', methods=['POST'])
 def webhook():
-
+    
     # NOTE: code needed to be adapted to remove PASS and put return, 200 ok and ordering of the code, handling stickers, etc. hence removing the citation 
     data = request.get_json()
     for entry in data["entry"]:
@@ -46,51 +46,54 @@ def webhook():
             if messaging_event.get("message"):  # someone sent us a message
                 
                 sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
+                try: 
+                    if "sticker_id" in messaging_event['message'].keys():
+                        send_message(sender_id, "Please don't send me stickers, emoji or non-text stuff, I'm boring that way :(")
+                        return "ok", 200
 
-                if "sticker_id" in messaging_event['message'].keys():
-                    send_message(sender_id, "Please don't send me stickers, emoji or non-text stuff, I'm boring that way :(")
+                    message_text = messaging_event["message"]["text"]  # the message's text
+
+                    if message_text == "Reset":
+                        users.remove({'user_id' : sender_id})
+
+                    if users.find_one({'user_id' : sender_id}) is None:
+                        # User was not found in the database, create them 
+                        users.insert_one({'user_id' : sender_id, 'state' : 0})
+
+
+                    item = users.find_one({'user_id' : sender_id})
+                    if item['state'] == 0: 
+                        send_message(sender_id, "Welcome to the ToastMaster! I can do many things! ")
+                        send_quick_reply(sender_id, "Let's start with one of the following options ", [
+                                {"content_type" : "text", "title" : "Jokes", "payload" : "0"},
+                                {"content_type" : "text", "title" : "Talk to me!", "payload" : "1"}
+                            ]
+                        )
+                        users.update_one({'user_id' : sender_id}, {'$set' : {'state' : 1} })
+
+                    if item['state'] == 1:
+                        send_message(sender_id, "Ok well let's just chat for a bit now!")
+
+                    with open('samples.txt','w') as outfile:
+                        outfile.writelines(message_text)
+
+
+                    #TODO: get rid of the following once the actual model is plugged in 
+                    mess_list = [
+                        "How you doing?",
+                        "My man what's good!",
+                        "Let's make some stuff happen",
+                        "So this hackathon is a lot of fun isn't it?",
+                        "tell me a joke and I will judge how funny it is"
+                    ]
+                    send_message(sender_id, mess_list[randint(0,4)])
+
+                except KeyError:
+                    send_message(sender_id ,"Encountered an error, check the logs")
                     return "ok", 200
 
-                message_text = messaging_event["message"]["text"]  # the message's text
-
-                if message_text == "Reset":
-                    users.remove({'user_id' : sender_id})
-
-                if users.find_one({'user_id' : sender_id}) is None:
-                    # User was not found in the database, create them 
-                    users.insert_one({'user_id' : sender_id, 'state' : 0})
-
-
-                item = users.find_one({'user_id' : sender_id})
-                if item['state'] == 0: 
-                    send_message(sender_id, "Welcome to the ToastMaster! I can do many things! ")
-                    send_quick_reply(sender_id, "Let's start with one of the following options ", [
-                            {"content_type" : "text", "title" : "Jokes", "payload" : "0"},
-                            {"content_type" : "text", "title" : "Talk to me!", "payload" : "1"}
-                        ]
-                    )
-                    users.update_one({'user_id' : sender_id}, {'$set' : {'state' : 1} })
-
-                if item['state'] == 1:
-                    send_message(sender_id, "Ok well let's just chat for a bit now!")
-
-                with open('samples.txt','w') as outfile:
-                    outfile.writelines(message_text)
-
-
-                #TODO: get rid of the following once the actual model is plugged in 
-                mess_list = [
-                    "How you doing?",
-                    "My man what's good!",
-                    "Let's make some stuff happen",
-                    "So this hackathon is a lot of fun isn't it?",
-                    "tell me a joke and I will judge how funny it is"
-                ]
-                send_message(sender_id, mess_list[randint(0,4)])
-
-                
-
     return "ok", 200
+    
 
 def send_message(recipient_id, message_text):
     # CITATION :  version based on https://github.com/hartleybrody/fb-messenger-bot/blob/master/app.py
