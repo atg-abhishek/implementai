@@ -79,7 +79,9 @@ def webhook():
                         # res = c.predictOnQuery(message_text)
                         headers = {"Content-Type" : "application/json"}
                         payload = json.dumps({"message" : message_text})
+                        pprint("reached here")
                         r = requests.post(os.environ['UBUNTU_IP']+":5000/get_answer", headers=headers, data=payload)
+                        pprint(r.text)
                         send_message(sender_id, r.json()['result'])
 
                     
