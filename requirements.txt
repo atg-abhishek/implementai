@@ -3,3 +3,7 @@ requests
 flask
 pymongo
 pprint
+tensorflow
+numpy
+nltk
+tqdm
