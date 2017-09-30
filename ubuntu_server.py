@@ -15,11 +15,8 @@ def hello():
 def get_answer():
     data = request.get_json()
     message = data['message']
-    # os.system("python3 main.py --test daemon")
-
-
-    # res = c.predictOnQuery(message)
-    return jsonify({"result" : message} )
+    res = c.daemonPredict(message)
+    return jsonify({"result" : res} )
 
 if __name__ == "__main__":
     ubuntu_app.run(host='0.0.0.0',debug=True)
