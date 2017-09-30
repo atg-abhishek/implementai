@@ -72,6 +72,7 @@ def webhook():
                         users.update_one({'user_id' : sender_id}, {'$set' : {'state' : 1} })
 
                     if item['state'] == 1:
+                        #TODO: need to process the quick reply chosen 
                         send_message(sender_id, "Ok well let's just chat for a bit now!")
 
                     with open('samples.txt','w') as outfile:
@@ -88,7 +89,7 @@ def webhook():
                     ]
                     send_message(sender_id, mess_list[randint(0,4)])
 
-                except KeyError:
+                except:
                     send_message(sender_id ,"Encountered an error, check the logs")
                     return "ok", 200
 
