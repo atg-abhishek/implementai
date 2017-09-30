@@ -7,4 +7,4 @@ def hello():
     return "Welcome to the ubuntu server"
 
 if __name__ == "__main__":
-    ubuntu_app.run(debug=True)
+    ubuntu_app.run(host='0.0.0.0',debug=True)
