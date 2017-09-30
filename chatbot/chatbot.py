@@ -289,25 +289,21 @@ class Chatbot:
             self.saver.restore(sess, modelName)
             print('Testing...')
 
-            self.predictOnQuery(self.sess)
+            #self.predictOnQuery(self.sess)
 
-    def predictOnQuery(self, sess):
+    def predictOnQuery(self, sess, question):
 
-        answer = '...'
-        while(True):
-            # Loading the file to predict on
-            with open(os.path.join(self.args.rootDir, self.TEST_IN_NAME), 'r') as f:
-                question = f.read().replace('\n', '')
-                answer = self.singlePredict(question)
-                if not answer:
-                    print('did not get answer')
-                    answer = "..."
-                else:
-                    answer = self.textData.sequence2str(answer, clean=True)
+        answer = self.singlePredict(question)
+        if not answer:
+            print('did not get answer')
+            answer = "..."
+        else:
+            answer = self.textData.sequence2str(answer, clean=True)
 
-            # write answer to file
-            with open(os.path.join(self.args.rootDir, 'output_messages.txt'), 'w') as f:
-                f.write(answer+'\n')
+        return answer
+        # write answer to file
+        # with open(os.path.join(self.args.rootDir, 'output_messages.txt'), 'w') as f:
+        #     f.write(answer+'\n')
 
     # meat and potatoes
     def mainTestInteractive(self, sess):
