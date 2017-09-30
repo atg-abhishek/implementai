@@ -53,8 +53,9 @@ def webhook():
 
                     message_text = messaging_event["message"]["text"]  # the message's text
 
-                    if message_text == "Reset":
-                        users.remove({'user_id' : sender_id})
+                    # if message_text == "Reset":
+                    #     users.remove_one({'user_id' : sender_id})
+                    # TODO: doing this currently by manuall removing the user from the mongodb
 
                     if users.find_one({'user_id' : sender_id}) is None:
                         # User was not found in the database, create them 
