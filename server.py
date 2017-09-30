@@ -3,12 +3,14 @@ from pymongo import MongoClient
 import os, json, requests
 from pprint import pprint 
 from random import randint
+from chatbot import chatbot
 
 client = MongoClient(os.environ['MONGODB_URI'])
 db = client[os.environ['MONGO_DB_NAME']]
 
 users = db['users']
-
+c = chatbot.Chatbot()
+c.main()
 app = Flask(__name__)
 
 @app.route('/')
@@ -74,10 +76,11 @@ def webhook():
 
                     if item['state'] == 1:
                         #TODO: need to process the quick reply chosen 
-                        send_message(sender_id, "Ok well let's just chat for a bit now!")
+                        # send_message(sender_id, "Ok well let's just chat for a bit now!")
+                        res = c.predictOnQuery(message_text)
+                        send_message(sender_id, res)
 
-                    with open('samples.txt','w') as outfile:
-                        outfile.writelines(message_text)
+                    
 
 
                     #TODO: get rid of the following once the actual model is plugged in 
