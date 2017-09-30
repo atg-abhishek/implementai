@@ -14,7 +14,7 @@ app = Flask(__name__)
 def hello():
     return "Welcome to the server for the Implement AI hackathon"
 
-@app.route('/db/add_user')
+@app.route('/test/add_user')
 def add_user():
     users.insert_one({'user_id' : "hello"})
     return "done"
@@ -45,8 +45,10 @@ def webhook():
             if messaging_event.get("message"):  # someone sent us a message
                 
                 sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
-                recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
 
+                if users.find_one({'user_id' : sender_id}) is None:
+                    # User was not found in the database, create them 
+                    users.insert_one({'user_id' : sender_id})
 
 
                 if "sticker_id" in messaging_event['message'].keys():
@@ -54,6 +56,8 @@ def webhook():
                     return "ok", 200
 
                 message_text = messaging_event["message"]["text"]  # the message's text
+                with open('samples.txt','w') as outfile:
+                    outfile.writelines(message_text)
 
                 send_message(sender_id, "roger that!")
 
