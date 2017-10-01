@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-from chatbot import chatbot
 from pprint import pprint 
 import os
 
